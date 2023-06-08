@@ -180,6 +180,9 @@ public class usersPage extends javax.swing.JInternalFrame {
         search_button.setBackground(new java.awt.Color(255, 153, 0));
         search_button.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         search_button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                search_buttonMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 search_buttonMouseEntered(evt);
             }
@@ -330,6 +333,10 @@ public class usersPage extends javax.swing.JInternalFrame {
          }
      }
     }//GEN-LAST:event_deleteMouseClicked
+
+    private void search_buttonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_search_buttonMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_search_buttonMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

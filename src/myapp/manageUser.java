@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package internalPages;
+package myapp;
+import internalPages.*;
 import config.dbConnector;
 import java.awt.Color;
 import java.sql.ResultSet;
@@ -19,18 +20,17 @@ import net.proteanit.sql.DbUtils;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import myapp.deptForm;
 
 /**
  *
  * @author Administrator
  */
-public class departmentPage extends javax.swing.JInternalFrame {
+public class manageUser extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form userPage
      */
-    public departmentPage() {
+    public manageUser() {
         initComponents();
         displayData();
         
@@ -45,8 +45,8 @@ public class departmentPage extends javax.swing.JInternalFrame {
     public void displayData(){
         try{
             dbConnector dbc= new dbConnector();
-            ResultSet rs=dbc.getData("SELECT*FROM tbl_department");
-            dept_table.setModel(DbUtils.resultSetToTableModel(rs)); 
+            ResultSet rs=dbc.getData("SELECT `s_id`, `s_fname`, `s_lname`, `s_gender`, `s_status` FROM tbl_student");
+            table.setModel(DbUtils.resultSetToTableModel(rs)); 
             rs.close();
         }catch(SQLException ex){
             System.out.println("Errors:"+ex.getMessage());
@@ -72,7 +72,7 @@ public class departmentPage extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        dept_table = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         delete = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         add = new javax.swing.JPanel();
@@ -84,6 +84,11 @@ public class departmentPage extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         refresh = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
+        u_id = new javax.swing.JTextField();
+        u_name = new javax.swing.JTextField();
+        u_status = new javax.swing.JComboBox<>();
+        CANCEL = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 51));
         jPanel1.setPreferredSize(new java.awt.Dimension(620, 460));
@@ -98,15 +103,20 @@ public class departmentPage extends javax.swing.JInternalFrame {
         jPanel3.setBounds(340, 0, 170, 40);
 
         jLabel1.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
-        jLabel1.setText("DEPARTMENTS PAGE");
+        jLabel1.setText("MANAGE USER'S");
         jPanel2.add(jLabel1);
-        jLabel1.setBounds(20, 0, 200, 40);
+        jLabel1.setBounds(20, 0, 150, 40);
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 610, 40));
 
-        jScrollPane1.setViewportView(dept_table);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 110, 640, 350));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, 380, 360));
 
         delete.setBackground(new java.awt.Color(255, 153, 0));
         delete.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -198,11 +208,6 @@ public class departmentPage extends javax.swing.JInternalFrame {
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("SEARCH");
-        jLabel7.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel7MouseClicked(evt);
-            }
-        });
         search_button.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 80, 30));
 
         jPanel1.add(search_button, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 50, 80, 30));
@@ -229,11 +234,43 @@ public class departmentPage extends javax.swing.JInternalFrame {
 
         jPanel1.add(refresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 50, 70, 30));
 
+        u_id.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                u_idActionPerformed(evt);
+            }
+        });
+        jPanel1.add(u_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 200, 30));
+        jPanel1.add(u_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 200, 30));
+
+        u_status.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pending", "Approved" }));
+        u_status.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                u_statusActionPerformed(evt);
+            }
+        });
+        jPanel1.add(u_status, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, 200, 40));
+
+        CANCEL.setText("CANCEL");
+        CANCEL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CANCELActionPerformed(evt);
+            }
+        });
+        jPanel1.add(CANCEL, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 310, 90, 40));
+
+        jButton2.setText("SAVE");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 90, 40));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -268,7 +305,7 @@ public class departmentPage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_editMouseExited
 
     private void search_buttonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_search_buttonMouseEntered
-     search_button.setBackground(bodycolor);
+       search_button.setBackground(bodycolor);
     }//GEN-LAST:event_search_buttonMouseEntered
 
     private void search_buttonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_search_buttonMouseExited
@@ -279,7 +316,7 @@ public class departmentPage extends javax.swing.JInternalFrame {
      
      JFrame mainFrame=(JFrame)SwingUtilities.getWindowAncestor(this);
      mainFrame.dispose();
-     deptForm stf=new deptForm ();
+     studentForm stf=new studentForm();
      stf.setVisible(true);
      stf.action="Add";
      stf.st_label.setText("Save");
@@ -300,17 +337,30 @@ public class departmentPage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_refreshMouseClicked
 
     private void editMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editMouseClicked
-    int rowIndex=dept_table.getSelectedRow();
+    int rowIndex=table.getSelectedRow();
     if(rowIndex<0){
       JOptionPane.showMessageDialog(null,"Please Select An Item!");
     }else{
-        TableModel model=dept_table.getModel();
-        deptForm stf=new deptForm();
-        stf.d_id.setText(""+model.getValueAt(rowIndex,0));
-        stf.d_code.setText(""+model.getValueAt(rowIndex,1));
-        stf.d_descrip.setText(""+model.getValueAt(rowIndex,2));
+        TableModel model=table.getModel();
+        studentForm stf=new studentForm();
+        stf.st_id.setText(""+model.getValueAt(rowIndex,0));
+        stf.st_fname.setText(""+model.getValueAt(rowIndex,1));
+        stf.st_lname.setText(""+model.getValueAt(rowIndex,2));
         
+        stf.gender=model.getValueAt(rowIndex,3).toString();
         
+        String gend=model.getValueAt(rowIndex,3).toString();
+        
+        if(gend.equals("Male")){
+            stf.male.setSelected(true);
+        }
+        if(gend.equals("Female")){
+            stf.female.setSelected(true);
+        }
+         
+        stf.st_status.setSelectedItem(model.getValueAt(rowIndex,4));
+        stf.st_address.setText(model.getValueAt(rowIndex,5).toString());
+        stf.st_email.setText(model.getValueAt(rowIndex,6).toString());
         stf.setVisible(true);
         stf.action="Update";
         stf.st_label.setText("Update");
@@ -321,11 +371,11 @@ public class departmentPage extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_editMouseClicked
 
     private void deleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteMouseClicked
-     int rowIndex=dept_table.getSelectedRow();
+     int rowIndex=table.getSelectedRow();
      if(rowIndex<0){
         JOptionPane.showMessageDialog(null,"Please Select data first from the table!"); 
      }else{
-         TableModel model=dept_table.getModel();
+         TableModel model=table.getModel();
          Object value=model.getValueAt(rowIndex,0);
          String id=value.toString();
          
@@ -333,36 +383,70 @@ public class departmentPage extends javax.swing.JInternalFrame {
          if(a==JOptionPane.YES_OPTION){
              dbConnector dbc=new dbConnector();
              int st_id=Integer.parseInt(id);
-             dbc.deleteData(st_id,"tbl_department","dept_id");
+             dbc.deleteData(st_id,"tbl_student","s_id");
              displayData();
          }
      }
     }//GEN-LAST:event_deleteMouseClicked
 
-    private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-        try{
-            dbConnector dbc= new dbConnector();
-            ResultSet rs=dbc.getData("SELECT*FROM tbl_department WHERE dept_code LIKE '"+search.getText()+"'");
-            dept_table.setModel(DbUtils.resultSetToTableModel(rs)); 
-            rs.close();
-        }catch(SQLException ex){
-            System.out.println("Errors:"+ex.getMessage());
-        }
-    }//GEN-LAST:event_jLabel7MouseClicked
-
     private void search_buttonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_search_buttonMouseClicked
-     DefaultTableModel model = (DefaultTableModel) dept_table.getModel();
+     DefaultTableModel model = (DefaultTableModel) table.getModel();
         TableRowSorter<DefaultTableModel> obj = new TableRowSorter<>(model);
-        dept_table.setRowSorter(obj);
+        table.setRowSorter(obj);
         obj.setRowFilter(RowFilter.regexFilter(search.getText()));
     }//GEN-LAST:event_search_buttonMouseClicked
 
+    private void u_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_u_idActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_u_idActionPerformed
+
+    private void u_statusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_u_statusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_u_statusActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+  int rowIndex = table.getSelectedRow();
+        if (rowIndex<0){
+
+            JOptionPane.showMessageDialog(null, "Plese select an item");
+        }
+        
+        else{
+            TableModel model = table.getModel();
+            transaction up = new transaction();
+            u_id.setText(""+model.getValueAt(rowIndex, 0));
+            u_name.setText(""+model.getValueAt(rowIndex, 1));
+            u_status.setSelectedItem(""+model.getValueAt(rowIndex, 4).toString());
+            
+           
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_tableMouseClicked
+
+    private void CANCELActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CANCELActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CANCELActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+      dbConnector dbc = new dbConnector();
+       if(u_id.equals("")){
+           JOptionPane.showMessageDialog(null, "Nothing to Update");
+       } else{
+        int num =dbc.updateData("UPDATE `tbl_student` SET `s_status`='"+u_status.getSelectedItem()+"' WHERE `s_id`='"+u_id.getText()+"'");
+        if(num==1){
+            JOptionPane.showMessageDialog(null, "Success!!!");
+            displaydata();
+        }
+        
+       }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton CANCEL;
     private javax.swing.JPanel add;
     private javax.swing.JPanel delete;
-    public javax.swing.JTable dept_table;
     private javax.swing.JPanel edit;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -376,5 +460,9 @@ public class departmentPage extends javax.swing.JInternalFrame {
     private javax.swing.JPanel refresh;
     private javax.swing.JTextField search;
     private javax.swing.JPanel search_button;
+    public javax.swing.JTable table;
+    private javax.swing.JTextField u_id;
+    private javax.swing.JTextField u_name;
+    private javax.swing.JComboBox<String> u_status;
     // End of variables declaration//GEN-END:variables
 }

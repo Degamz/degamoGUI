@@ -10,12 +10,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableModel;
 import myapp.studentForm;
 import myapp.loginForm;
 import net.proteanit.sql.DbUtils;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -179,6 +182,9 @@ public class studentPage extends javax.swing.JInternalFrame {
         search_button.setBackground(new java.awt.Color(255, 153, 0));
         search_button.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         search_button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                search_buttonMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 search_buttonMouseEntered(evt);
             }
@@ -339,6 +345,13 @@ public class studentPage extends javax.swing.JInternalFrame {
          }
      }
     }//GEN-LAST:event_deleteMouseClicked
+
+    private void search_buttonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_search_buttonMouseClicked
+     DefaultTableModel model = (DefaultTableModel) student_table.getModel();
+        TableRowSorter<DefaultTableModel> obj = new TableRowSorter<>(model);
+        student_table.setRowSorter(obj);
+        obj.setRowFilter(RowFilter.regexFilter(search.getText()));
+    }//GEN-LAST:event_search_buttonMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

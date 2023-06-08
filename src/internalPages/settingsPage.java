@@ -108,7 +108,7 @@ public class settingsPage extends javax.swing.JInternalFrame {
         File file = new File(path);
         String fileName = file.getName();
         
-        Path filePath = Paths.get("src/forImages", fileName);
+        Path filePath = Paths.get("src/image", fileName);
         boolean fileExists = Files.exists(filePath);
         
         if (fileExists) {
@@ -125,8 +125,8 @@ public class settingsPage extends javax.swing.JInternalFrame {
             dbConnector dbc = new dbConnector();
             ResultSet rs = dbc.getData("SELECT * FROM `tbl_user` WHERE `u_username`= '"+pic.getText()+"'");
             if(rs.next()){
-               picture.setIcon(ResizeImage(rs.getString("c_image"), null, picture));
-               name.setText(rs.getString("c_name"));
+               picture.setIcon(ResizeImage(rs.getString("u_img"), null, picture));
+               name.setText(rs.getString("u_img"));
                 
                
                 
@@ -161,13 +161,15 @@ public class settingsPage extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         picture = new javax.swing.JLabel();
         name = new javax.swing.JTextField();
         pic = new javax.swing.JLabel();
+        uname = new javax.swing.JTextField();
+        gmail = new javax.swing.JTextField();
+        pangan = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(620, 460));
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -265,25 +267,20 @@ public class settingsPage extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel1);
         jLabel1.setBounds(20, 0, 250, 40);
 
-        jLabel9.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        jLabel9.setText("ADDRESS: TULAY MINGLANILLA CEBU");
-        jPanel1.add(jLabel9);
-        jLabel9.setBounds(20, 140, 330, 40);
-
         jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
         jLabel10.setText("ACCOUNT NAME: ");
         jPanel1.add(jLabel10);
         jLabel10.setBounds(20, 40, 110, 50);
 
         jLabel11.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        jLabel11.setText("POSITION: ADMINISTRATOR");
+        jLabel11.setText("USERNAME:");
         jPanel1.add(jLabel11);
-        jLabel11.setBounds(20, 90, 210, 30);
+        jLabel11.setBounds(20, 90, 100, 30);
 
         jLabel12.setFont(new java.awt.Font("Century Gothic", 1, 12)); // NOI18N
-        jLabel12.setText("EMAIL: degamojhonry@gmail.com");
+        jLabel12.setText("EMAIL: ");
         jPanel1.add(jLabel12);
-        jLabel12.setBounds(20, 120, 240, 30);
+        jLabel12.setBounds(20, 130, 100, 30);
 
         picture.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
         picture.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -304,6 +301,26 @@ public class settingsPage extends javax.swing.JInternalFrame {
         name.setBounds(130, 50, 160, 30);
         jPanel1.add(pic);
         pic.setBounds(430, 134, 150, 30);
+
+        uname.setBackground(new java.awt.Color(255, 204, 51));
+        uname.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unameActionPerformed(evt);
+            }
+        });
+        jPanel1.add(uname);
+        uname.setBounds(130, 90, 160, 30);
+
+        gmail.setBackground(new java.awt.Color(255, 204, 51));
+        gmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gmailActionPerformed(evt);
+            }
+        });
+        jPanel1.add(gmail);
+        gmail.setBounds(130, 130, 160, 30);
+        jPanel1.add(pangan);
+        pangan.setBounds(440, 144, 130, 30);
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 220));
 
@@ -361,13 +378,13 @@ try {
           dbConnector dbc = new dbConnector();
           usersPage up = new usersPage();
           up.nm = pic.getText();
-          ResultSet rs = dbc.getData("SELECT * FROM `tbl_costumer` WHERE `u_username`= '"+picture.getText()+"'");
+          ResultSet rs = dbc.getData("SELECT * FROM `tbl_user` WHERE `u_username`= '"+picture.getText()+"'");
          if(rs.next()) {
-          up.c_name.setText(rs.getString("u_name"));
-          up.c_cont.setText(rs.getString("c_contact_no."));
-          up.c_add1.setText(rs.getString("c_address"));
-          up.photo.setIcon(ResizeImage(rs.getString("img_name"), null, picture));
-          up.oldpath = rs.getString("img_name");
+          up.name.setText(rs.getString("u_name"));
+          up.uname.setText(rs.getString("c_contact_no."));
+          up.gmail.setText(rs.getString("c_address"));
+          up.photo.setIcon(ResizeImage(rs.getString("u_img"), null, picture));
+          up.oldpath = rs.getString("u_img");
          
            if(rs.getString("img_name").isEmpty()){
                     up.Browse.setVisible(false);
@@ -389,8 +406,17 @@ try {
       }     
     }//GEN-LAST:event_manageUserMouseClicked
 
+    private void unameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_unameActionPerformed
+
+    private void gmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gmailActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JTextField gmail;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -401,14 +427,15 @@ try {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel logout;
     private javax.swing.JPanel manageUser;
     public javax.swing.JTextField name;
+    private javax.swing.JLabel pangan;
     private javax.swing.JLabel pic;
     private javax.swing.JLabel picture;
     private javax.swing.JPanel reports;
+    public javax.swing.JTextField uname;
     // End of variables declaration//GEN-END:variables
 }

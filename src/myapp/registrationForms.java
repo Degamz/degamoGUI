@@ -47,8 +47,8 @@ public class registrationForms extends javax.swing.JFrame {
     
     public String destination = "";
     File selectedFile;
-//    public String oldpath;
     String path; 
+    
     
    public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
     ImageIcon MyImage = null;
@@ -89,7 +89,7 @@ public class registrationForms extends javax.swing.JFrame {
         File file = new File(path);
         String fileName = file.getName();
         
-        Path filePath = Paths.get("src/forImages", fileName);
+        Path filePath = Paths.get("src/image", fileName);
         boolean fileExists = Files.exists(filePath);
         
         if (fileExists) {
@@ -338,7 +338,7 @@ public class registrationForms extends javax.swing.JFrame {
 
     private void cancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelMouseClicked
       if(!username.getText().isEmpty()||!password.getText().isEmpty()){
-        int a = JOptionPane.showConfirmDialog(null, "Dicard this this registration form?");
+        int a = JOptionPane.showConfirmDialog(null, "You want to cancel your Registration ?");
         if(a==JOptionPane.YES_OPTION){
         
         loginForm login = new loginForm();
@@ -374,7 +374,7 @@ public class registrationForms extends javax.swing.JFrame {
         int result=0;
         try{
                
-            
+            String pending = "Pending";
             pass=hashPASSWORD.hashPassword(password.getText());
             
             
@@ -382,7 +382,7 @@ public class registrationForms extends javax.swing.JFrame {
        
       dbConnector dbc=new dbConnector();
       Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/account queuing system", "root", "");
-            String sql = "INSERT INTO `tbl_user`( `user_fname`, `user_lname`, `user_email`, `u_username`, `u_password`,`img_name`) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO `tbl_user`( `user_fname`, `user_lname`, `user_email`, `u_username`, `u_password`,`u_img`) VALUES (?,?,?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, fname.getText());
             pst.setString(2, lname.getText());
@@ -433,7 +433,7 @@ public class registrationForms extends javax.swing.JFrame {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     try {
                         selectedFile = fileChooser.getSelectedFile();
-                        destination = "src/forImages/" + selectedFile.getName();
+                        destination = "src/images/" + selectedFile.getName();
                         path  = selectedFile.getAbsolutePath();
                         
                         
@@ -458,17 +458,7 @@ public class registrationForms extends javax.swing.JFrame {
     }//GEN-LAST:event_browseActionPerformed
 
     private void labelimgMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelimgMouseClicked
-    try{
-            dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT * FROM img WHERE id = 1");
-            if(rs.next()){
-                labelimg.setIcon(ResizeImage(null, rs.getBytes("image")));
-                
-            }
-            
-}catch(Exception e){
-
-}
+   
     }//GEN-LAST:event_labelimgMouseClicked
 
     /**
