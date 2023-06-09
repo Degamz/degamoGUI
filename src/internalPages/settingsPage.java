@@ -43,10 +43,7 @@ import static myapp.dashBoard.main;
  */
 public class settingsPage extends javax.swing.JInternalFrame {
 
-  
-  public String destination = "";
-    File selectedFile;
-    String path;   
+ 
     
 
     /**
@@ -54,7 +51,8 @@ public class settingsPage extends javax.swing.JInternalFrame {
      */
     public settingsPage() {
         initComponents();
-        displayImage();
+        setTitle ("ACCOUNT QUEUING SYSTEM");
+       
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
         BasicInternalFrameUI bi=(BasicInternalFrameUI)this.getUI();
         bi.setNorthPane(null);
@@ -67,79 +65,33 @@ public class settingsPage extends javax.swing.JInternalFrame {
     Color headcolor=new Color(255,204,51);
     Color bodycolor=new Color (255,51,51);
 
-    
-    public static int getHeightFromWidth(String imagePath, int desiredWidth) {
-        try {
-            // Read the image file
-            File imageFile = new File(imagePath);
-            BufferedImage image = ImageIO.read(imageFile);
-            
-            // Get the original width and height of the image
-            int originalWidth = image.getWidth();
-            int originalHeight = image.getHeight();
-            
-            // Calculate the new height based on the desired width and the aspect ratio
-            int newHeight = (int) ((double) desiredWidth / originalWidth * originalHeight);
-            
-            return newHeight;
-        } catch (IOException ex) {
-            System.out.println("No image found!");
-        }
-        
-        return -1;
-    }
-    public  ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
+    public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
     ImageIcon MyImage = null;
         if(ImagePath !=null){
             MyImage = new ImageIcon(ImagePath);
         }else{
             MyImage = new ImageIcon(pic);
         }
-        
-    int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
-
     Image img = MyImage.getImage();
-    Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
+    Image newImg = img.getScaledInstance(labelimg.getWidth(), labelimg.getHeight(), Image.SCALE_SMOOTH);
     ImageIcon image = new ImageIcon(newImg);
     return image;
 }
-
- public int FileExistenceChecker(String path){
-        File file = new File(path);
-        String fileName = file.getName();
+    public void imagedisplay(){
         
-        Path filePath = Paths.get("src/image", fileName);
-        boolean fileExists = Files.exists(filePath);
-        
-        if (fileExists) {
-            return 1;
-        } else {
-            return 0;
-        }
-    
-    }
-    public void displayImage(){
-
-    
-    try{
+        try{
             dbConnector dbc = new dbConnector();
-            ResultSet rs = dbc.getData("SELECT * FROM `tbl_user` WHERE `u_username`= '"+pic.getText()+"'");
+            ResultSet rs = dbc.getData("SELECT * FROM `tbl_user` WHERE `u_id`=1");
             if(rs.next()){
-               picture.setIcon(ResizeImage(rs.getString("u_img"), null, picture));
-               name.setText(rs.getString("u_img"));
-                
-               
-                
+                labelimg.setIcon(ResizeImage(null, rs.getBytes("u_image")));
                 
             }
             
 }catch(Exception e){
 
-}
-}
-
-
-    
+}       
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -164,12 +116,12 @@ public class settingsPage extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        picture = new javax.swing.JLabel();
+        labelimg = new javax.swing.JLabel();
         name = new javax.swing.JTextField();
         pic = new javax.swing.JLabel();
         uname = new javax.swing.JTextField();
         gmail = new javax.swing.JTextField();
-        pangan = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(620, 460));
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -282,14 +234,14 @@ public class settingsPage extends javax.swing.JInternalFrame {
         jPanel1.add(jLabel12);
         jLabel12.setBounds(20, 130, 100, 30);
 
-        picture.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-        picture.addMouseListener(new java.awt.event.MouseAdapter() {
+        labelimg.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        labelimg.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                pictureMouseClicked(evt);
+                labelimgMouseClicked(evt);
             }
         });
-        jPanel1.add(picture);
-        picture.setBounds(430, 10, 150, 170);
+        jPanel1.add(labelimg);
+        labelimg.setBounds(430, 20, 150, 160);
 
         name.setBackground(new java.awt.Color(255, 204, 51));
         name.addActionListener(new java.awt.event.ActionListener() {
@@ -319,8 +271,11 @@ public class settingsPage extends javax.swing.JInternalFrame {
         });
         jPanel1.add(gmail);
         gmail.setBounds(130, 130, 160, 30);
-        jPanel1.add(pangan);
-        pangan.setBounds(440, 144, 130, 30);
+
+        jButton1.setBackground(new java.awt.Color(255, 204, 51));
+        jButton1.setText("SAVE");
+        jPanel1.add(jButton1);
+        jButton1.setBounds(460, 190, 90, 23);
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 220));
 
@@ -363,47 +318,12 @@ public class settingsPage extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameActionPerformed
 
-    private void pictureMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pictureMouseClicked
-     displayImage();
-    }//GEN-LAST:event_pictureMouseClicked
-
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-    displayImage();
+    
     }//GEN-LAST:event_formComponentShown
 
     private void manageUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_manageUserMouseClicked
-try {
-          
-          dashBoard db = new dashBoard();
-          dbConnector dbc = new dbConnector();
-          usersPage up = new usersPage();
-          up.nm = pic.getText();
-          ResultSet rs = dbc.getData("SELECT * FROM `tbl_user` WHERE `u_username`= '"+picture.getText()+"'");
-         if(rs.next()) {
-          up.name.setText(rs.getString("u_name"));
-          up.uname.setText(rs.getString("c_contact_no."));
-          up.gmail.setText(rs.getString("c_address"));
-          up.photo.setIcon(ResizeImage(rs.getString("u_img"), null, picture));
-          up.oldpath = rs.getString("u_img");
-         
-           if(rs.getString("img_name").isEmpty()){
-                    up.Browse.setVisible(false);
-                    ImageIcon imageIcon = new ImageIcon("src/icons/add.png");
-                    up.photo.setIcon(imageIcon);
-                }else{
-                    up.Browse.setVisible(true);
-                    up.Browse.setText("REMOVE");
-                }
-         }
 
-          JDesktopPane pane = getDesktopPane();
-          pane.add(up);
-          up.setVisible(true);
-       this.dispose();
-          
-      } catch (SQLException ex) {
-          Logger.getLogger(settingsPage.class.getName()).log(Level.SEVERE, null, ex);
-      }     
     }//GEN-LAST:event_manageUserMouseClicked
 
     private void unameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unameActionPerformed
@@ -414,9 +334,14 @@ try {
         // TODO add your handling code here:
     }//GEN-LAST:event_gmailActionPerformed
 
+    private void labelimgMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelimgMouseClicked
+     imagedisplay(); 
+    }//GEN-LAST:event_labelimgMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JTextField gmail;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -429,12 +354,11 @@ try {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel labelimg;
     private javax.swing.JPanel logout;
     private javax.swing.JPanel manageUser;
     public javax.swing.JTextField name;
-    private javax.swing.JLabel pangan;
     private javax.swing.JLabel pic;
-    private javax.swing.JLabel picture;
     private javax.swing.JPanel reports;
     public javax.swing.JTextField uname;
     // End of variables declaration//GEN-END:variables

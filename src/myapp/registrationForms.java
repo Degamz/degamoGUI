@@ -45,9 +45,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class registrationForms extends javax.swing.JFrame {
     
-    public String destination = "";
-    File selectedFile;
-    String path; 
+    
     
     
    public  ImageIcon ResizeImage(String ImagePath, byte[] pic) {
@@ -68,6 +66,88 @@ public class registrationForms extends javax.swing.JFrame {
      */
     public registrationForms() {
         initComponents();
+        
+       setTitle (" ACCOUNT QUEUING SYSTEM");
+    }
+    
+    public String destination = "";
+    File selectedFile;
+    public String oldpath;
+    String path;
+    
+    public void imageUpdater(String existingFilePath, String newFilePath) {
+        File existingFile = new File(existingFilePath);
+        if (existingFile.exists()) {
+            String parentDirectory = existingFile.getParent();
+            File newFile = new File(newFilePath);
+            String newFileName = newFile.getName();
+            File updatedFile = new File(parentDirectory, newFileName);
+            existingFile.delete();
+            try {
+                Files.copy(newFile.toPath(), updatedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("Image updated successfully.");
+            } catch (IOException e) {
+                System.out.println("Error occurred while updating the image: ");
+            }
+        } else {
+            try {
+                Files.copy(selectedFile.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                System.out.println("Error on update!");
+            }
+        }
+    }
+
+    public static int getHeightFromWidth(String imagePath, int desiredWidth) {
+        try {
+            // Read the image file
+            File imageFile = new File(imagePath);
+            BufferedImage image = ImageIO.read(imageFile);
+
+            // Get the original width and height of the image
+            int originalWidth = image.getWidth();
+            int originalHeight = image.getHeight();
+
+            // Calculate the new height based on the desired width and the aspect ratio
+            int newHeight = (int) ((double) desiredWidth / originalWidth * originalHeight);
+
+            return newHeight;
+        } catch (IOException ex) {
+            System.out.println("No image found!");
+        }
+
+        return -1;
+    }
+
+    public ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
+        ImageIcon MyImage = null;
+        if (ImagePath != null) {
+            MyImage = new ImageIcon(ImagePath);
+        } else {
+            MyImage = new ImageIcon(pic);
+        }
+
+        int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
+
+        Image img = MyImage.getImage();
+        Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon(newImg);
+        return image;
+    }
+
+    public int FileExistenceChecker(String path) {
+        File file = new File(path);
+        String fileName = file.getName();
+
+        Path filePath = Paths.get("src/image", fileName);
+        boolean fileExists = Files.exists(filePath);
+
+        if (fileExists) {
+            return 1;
+        } else {
+            return 0;
+        }
+
     }
     Color hover=new Color(255,204,51);
     Color defbutton=new Color(255,153,0);
@@ -84,59 +164,6 @@ public class registrationForms extends javax.swing.JFrame {
         panel.setBackground(defbutton);
         panel.setBorder(empty);
     }
-    
-    public int FileExistenceChecker(String path){
-        File file = new File(path);
-        String fileName = file.getName();
-        
-        Path filePath = Paths.get("src/image", fileName);
-        boolean fileExists = Files.exists(filePath);
-        
-        if (fileExists) {
-            return 1;
-        } else {
-            return 0;
-        }
-    
-    }
-    
-     public static int getHeightFromWidth(String imagePath, int desiredWidth) {
-        try {
-            // Read the image file
-            File imageFile = new File(imagePath);
-            BufferedImage image = ImageIO.read(imageFile);
-            
-            // Get the original width and height of the image
-            int originalWidth = image.getWidth();
-            int originalHeight = image.getHeight();
-            
-            // Calculate the new height based on the desired width and the aspect ratio
-            int newHeight = (int) ((double) desiredWidth / originalWidth * originalHeight);
-            
-            return newHeight;
-        } catch (IOException ex) {
-            System.out.println("No image found!");
-        }
-        
-        return -1;
-    }
-     
-    public  ImageIcon ResizeImage(String ImagePath, byte[] pic, JLabel label) {
-    ImageIcon MyImage = null;
-        if(ImagePath !=null){
-            MyImage = new ImageIcon(ImagePath);
-        }else{
-            MyImage = new ImageIcon(pic);
-        }
-        
-    int newHeight = getHeightFromWidth(ImagePath, label.getWidth());
-
-    Image img = MyImage.getImage();
-    Image newImg = img.getScaledInstance(label.getWidth(), newHeight, Image.SCALE_SMOOTH);
-    ImageIcon image = new ImageIcon(newImg);
-    return image;
-}
-    
     
     
     
@@ -180,7 +207,8 @@ public class registrationForms extends javax.swing.JFrame {
         register = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         labelimg = new javax.swing.JLabel();
-        browse = new javax.swing.JButton();
+        browse = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -262,7 +290,7 @@ public class registrationForms extends javax.swing.JFrame {
         cancel.setLayout(cancelLayout);
         cancelLayout.setHorizontalGroup(
             cancelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
         );
         cancelLayout.setVerticalGroup(
             cancelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,14 +337,35 @@ public class registrationForms extends javax.swing.JFrame {
         });
         jPanel3.add(labelimg, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 20, 150, 150));
 
-        browse.setBackground(new java.awt.Color(255, 204, 51));
-        browse.setText("BROWSE");
-        browse.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                browseActionPerformed(evt);
+        browse.setBackground(new java.awt.Color(255, 153, 0));
+        browse.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                browseMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                browseMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                browseMouseExited(evt);
             }
         });
-        jPanel3.add(browse, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 180, 90, 20));
+
+        jLabel10.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel10.setText("BROWSE");
+
+        javax.swing.GroupLayout browseLayout = new javax.swing.GroupLayout(browse);
+        browse.setLayout(browseLayout);
+        browseLayout.setHorizontalGroup(
+            browseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+        );
+        browseLayout.setVerticalGroup(
+            browseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(browse, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 190, -1, 30));
 
         jPanel1.add(jPanel3);
         jPanel3.setBounds(0, 40, 600, 330);
@@ -374,7 +423,7 @@ public class registrationForms extends javax.swing.JFrame {
         int result=0;
         try{
                
-            String pending = "Pending";
+            
             pass=hashPASSWORD.hashPassword(password.getText());
             
             
@@ -391,27 +440,34 @@ public class registrationForms extends javax.swing.JFrame {
             pst.setString(5, pass);
             pst.setString(6,destination);   
             pst.execute();
-             result = 1;
+           
             
-            Files.copy(selectedFile.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);   
-           if(result == 1){ 
-                JOptionPane.showMessageDialog(null, "Successfull added");
-                loginForm login=new loginForm();
-                login.setVisible(true);
-                this.dispose();
-           }
-            } catch (NoSuchAlgorithmException ex) {
-                System.out.println("" + ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(register.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(register.class.getName()).log(Level.SEVERE, null, ex);
+            File destinationFile = new File(destination);
+            if (!destinationFile.exists()) {
+                if (selectedFile.exists()) {
+                    Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("Image copied successfully.");
+                } else {
+                    System.out.println("Selected image file does not exist.");
+                }
+            } else {
+                System.out.println("Destination file already exists.");
             }
 
+
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "Successfully Updated!");
+             loginForm login=new loginForm();
+        this.dispose();
+         login.setVisible(true);
+            
+        }catch(Exception e){
+            System.out.println(e);
         }
             
             
       
+     }    
       
      
     }//GEN-LAST:event_registerMouseClicked
@@ -424,42 +480,41 @@ public class registrationForms extends javax.swing.JFrame {
     buttonDefaultColor(register);
     }//GEN-LAST:event_registerMouseExited
 
-    private void browseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseActionPerformed
-    JFileChooser fileChooser = new JFileChooser();
-                int returnValue = fileChooser.showOpenDialog(null);
-                
-                
-                
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        selectedFile = fileChooser.getSelectedFile();
-                        destination = "src/images/" + selectedFile.getName();
-                        path  = selectedFile.getAbsolutePath();
-                        
-                        
-                        if(FileExistenceChecker(path) == 1){
-                          JOptionPane.showMessageDialog(null, "File Already Exist, Rename or Choose another!");
-                            destination = "";
-                            path="";
-                        }else{
-                            labelimg.setIcon(ResizeImage(path, null,labelimg ));
-                            System.out.println(""+destination);
-//                            browse.setVisible(true);
-//                            browse.setText("REMOVE");
-                        }
-                    } catch (Exception ex) {
-                        System.out.println("File Error!");
-                    }
-                }
-        
-         
-            
-
-    }//GEN-LAST:event_browseActionPerformed
-
     private void labelimgMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelimgMouseClicked
    
     }//GEN-LAST:event_labelimgMouseClicked
+
+    private void browseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_browseMouseClicked
+      JFileChooser fileChooser = new JFileChooser();
+    int returnValue = fileChooser.showOpenDialog(null);
+
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+        try {
+            selectedFile = fileChooser.getSelectedFile();
+            path = selectedFile.getAbsolutePath();
+            destination = "src/image/" + selectedFile.getName();
+
+            if (FileExistenceChecker(path) == 1) {
+                JOptionPane.showMessageDialog(null, "File Already Exists, Rename or Choose Another!");
+                destination = "";
+                path = "";
+            } else {
+                labelimg.setIcon(ResizeImage(path, null, labelimg));
+                System.out.println(destination);
+            }
+        } catch (Exception ex) {
+            System.out.println("File Error!");
+        }
+    }
+    }//GEN-LAST:event_browseMouseClicked
+
+    private void browseMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_browseMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_browseMouseEntered
+
+    private void browseMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_browseMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_browseMouseExited
 
     /**
      * @param args the command line arguments
@@ -498,10 +553,11 @@ public class registrationForms extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton browse;
+    private javax.swing.JPanel browse;
     private javax.swing.JPanel cancel;
     private javax.swing.JTextField email;
     private javax.swing.JTextField fname;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
